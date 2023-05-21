@@ -43,6 +43,24 @@ func main() {
 				string_list[idx-1] = strconv.Itoa(int(num))
 				string_list[idx] = ""
 			}
+		case "(low,":
+			{
+				num_str := strings.Split(string_list[idx+1], ")")
+				num, _ := strconv.Atoi(num_str[0])
+
+				for i := idx; i > idx-num; i-- {
+					string_list[i-1] = strings.ToLower(string_list[i-1])
+				}
+			}
+		case "(up,":
+			{
+				num_str := strings.Split(string_list[idx+1], ")")
+				num, _ := strconv.Atoi(num_str[0])
+
+				for i := idx; i > idx-num; i-- {
+					string_list[i-1] = strings.ToUpper(string_list[i-1])
+				}
+			}
 		}
 	}
 	fmt.Println("")
