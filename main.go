@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"unicode"
 )
 
 func main() {
-	file_name := os.Args[1]                        // Reading the first argument after program name
-	dat, _ := os.ReadFile(file_name)               // Read the file and get the data as byte[]
+	//file_name := os.Args[1]                        // Reading the first argument after program name
+	dat, _ := os.ReadFile("sample.txt")            // Read the file and get the data as byte[]
 	string_list := strings.Split(string(dat), " ") // Conv string to a List of strings
 	fmt.Println(string_list)
 
@@ -30,19 +31,31 @@ func main() {
 			string_list[idx] = ""
 		} else if word == "(low," {
 			nLow(string_list, idx)
-			string_list[idx] = ""
-			string_list[idx+1] = ""
 		} else if word == "(up," {
 			nUp(string_list, idx)
-			string_list[idx] = ""
 		} else if word == "(cap," {
 			nCapitalize(string_list, idx)
-			string_list[idx] = ""
+		} else if word != "" && idx < len(string_list)-1 {
+			if unicode.IsPunct(rune(word[0])) && !unicode.IsLetter(rune(word[1])) {
+				string_list[idx] = ""
+				for rev_idx := idx - 1; rev_idx > 0; rev_idx-- {
+					if string_list[rev_idx] != "" {
+						string_list[rev_idx] += string(word[0:])
+						break
+					}
+				}
 
-		} else if word == "," {
-			string_list[idx-1] = ""
-			string_list[idx] = ""
-			string_list[idx-2] += ","
+			} else if unicode.IsPunct(rune(word[0])) && unicode.IsLetter(rune(word[1])) {
+				temp_str := word[1:]
+				string_list[idx] = ""
+				for rev_idx := idx - 1; rev_idx > 0; rev_idx-- {
+					if string_list[rev_idx] != "" {
+						string_list[rev_idx] += string(word[0])
+						break
+					}
+				}
+				string_list[idx] = temp_str
+			}
 		}
 	}
 
@@ -50,18 +63,17 @@ func main() {
 
 	for _, word := range string_list {
 		if word != "" {
+			/*if idx < len(string_list)-1 {
+				if string_list[idx+1] != "" {
+
+					if unicode.IsPunct(rune(string_list[idx+1][0])) {
+						str_out += word
+						continue
+					}
+				}
+			}*/
 			str_out += word
 			str_out += " "
-		}
-	}
-
-	byte_str := []byte(str_out)
-
-	for idx, char := range byte_str{
-		if char == "," {
-			if byte_str[idx-1] == " " {
-				byte_str[idx-1] = ""
-			}
 		}
 	}
 	fmt.Println("")

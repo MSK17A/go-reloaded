@@ -13,4 +13,12 @@ func nCapitalize(string_list []string, idx int) {
 		str := string_list[i-1]
 		string_list[i-1] = strings.ToUpper(string(str[0])) + str[1:]
 	}
+
+	string_list[idx] = ""
+	string_list[idx+1] = ""
+	/*if unicode.IsPunct(rune(string_list[idx+2][0])) {
+		string_list[idx+2] = ""
+		string_list[idx-1] += ","
+	}*/
+
 }

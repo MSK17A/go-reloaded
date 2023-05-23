@@ -12,4 +12,10 @@ func nLow(string_list []string, idx int) {
 	for i := idx; i > idx-num; i-- {
 		string_list[i-1] = strings.ToLower(string_list[i-1])
 	}
+	string_list[idx] = ""
+	string_list[idx+1] = ""
+	/*if unicode.IsPunct(rune(string_list[idx+2][0])) {
+		string_list[idx+2] = ""
+		string_list[idx-1] += ","
+	}*/
 }
