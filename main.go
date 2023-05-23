@@ -43,7 +43,6 @@ func main() {
 			string_list[idx-1] = ""
 			string_list[idx] = ""
 			string_list[idx-2] += ","
-
 		}
 	}
 
@@ -55,7 +54,16 @@ func main() {
 			str_out += " "
 		}
 	}
+
+	byte_str := []byte(str_out)
+
+	for idx, char := range byte_str{
+		if char == "," {
+			if byte_str[idx-1] == " " {
+				byte_str[idx-1] = ""
+			}
+		}
+	}
 	fmt.Println("")
 	fmt.Println(str_out)
-
 }
