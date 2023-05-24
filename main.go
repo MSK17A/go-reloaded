@@ -2,80 +2,38 @@ package main
 
 import (
 	"fmt"
-	"os"
+	"regexp"
+	//"strconv"
 	"strings"
-	"unicode"
+	"os"
 )
 
 func main() {
-	//file_name := os.Args[1]                        // Reading the first argument after program name
-	dat, _ := os.ReadFile("sample.txt")            // Read the file and get the data as byte[]
-	string_list := strings.Split(string(dat), " ") // Conv string to a List of strings
-	fmt.Println(string_list)
+	file_name := os.Args[1]                        // Reading the first argument after program name
+	dat, _ := os.ReadFile(file_name)               // Read the file and get the data as byte[]
+	str := string(dat)
 
-	for idx, word := range string_list {
-		if word == "(cap)" {
-			Capitalize(string_list, idx)
-			string_list[idx] = "" // Replece with empty string to mark it as deleted
-		} else if word == "(up)" {
-			Upper(string_list, idx)
-			string_list[idx] = ""
-		} else if word == "(low)" {
-			Lower(string_list, idx)
-			string_list[idx] = ""
-		} else if word == "(hex)" {
-			HexToDec(string_list, idx)
-			string_list[idx] = ""
-		} else if word == "(bin)" {
-			BinToDec(string_list, idx)
-			string_list[idx] = ""
-		} else if word == "(low," {
-			nLow(string_list, idx)
-		} else if word == "(up," {
-			nUp(string_list, idx)
-		} else if word == "(cap," {
-			nCapitalize(string_list, idx)
-		} else if word != "" && idx < len(string_list)-1 {
-			if unicode.IsPunct(rune(word[0])) && !unicode.IsLetter(rune(word[1])) {
-				string_list[idx] = ""
-				for rev_idx := idx - 1; rev_idx > 0; rev_idx-- {
-					if string_list[rev_idx] != "" {
-						string_list[rev_idx] += string(word[0:])
-						break
-					}
-				}
+	reCap := regexp.MustCompile(`([^[:space:]]+)\s+\(cap\)`) // 
+	modified := reCap.ReplaceAllStringFunc(str, capitalize)
 
-			} else if unicode.IsPunct(rune(word[0])) && unicode.IsLetter(rune(word[1])) {
-				temp_str := word[1:]
-				string_list[idx] = ""
-				for rev_idx := idx - 1; rev_idx > 0; rev_idx-- {
-					if string_list[rev_idx] != "" {
-						string_list[rev_idx] += string(word[0])
-						break
-					}
-				}
-				string_list[idx] = temp_str
-			}
-		}
-	}
+	reUp := regexp.MustCompile(`([^\s]+)\s+\(up\)`)
+	modified = reUp.ReplaceAllStringFunc(modified, ToUp)
 
-	str_out := ""
+	reQaws := regexp.MustCompile(`\s*\((\w+),\s*(\d+)\)`) // spcae (word, number)
+	modified = reQaws.ReplaceAllStringFunc(modified, qawsHandler)
+	fmt.Println(modified)
+}
 
-	for _, word := range string_list {
-		if word != "" {
-			/*if idx < len(string_list)-1 {
-				if string_list[idx+1] != "" {
 
-					if unicode.IsPunct(rune(string_list[idx+1][0])) {
-						str_out += word
-						continue
-					}
-				}
-			}*/
-			str_out += word
-			str_out += " "
-		}
-	}
-	fmt.Println("")
-	fmt.Println(str_out)
+func capitalize(match string) string {
+	return strings.Title(match[0 : len(match)-6])
+}
+
+func ToUp(match string) string {
+	return strings.ToUpper(match[0 : len(match)-5])
+}
+
+func qawsHandler(match string) string {
+	fmt.Println(match[0: len(match)-])
+	return "QAWS"
 }
