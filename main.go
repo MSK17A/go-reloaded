@@ -15,7 +15,7 @@ func main() {
 	dat, _ := os.ReadFile(file_name) // Read the file and get the data as byte[]
 	str := string(dat)
 
-	reCap := regexp.MustCompile(`([^[:space:]]+)\s+\(cap\)\s*`) // Selects this expression " (cap) "
+	reCap := regexp.MustCompile(`([^\s]+)\s+\(cap\)\s*`) // Selects this expression " (cap) "
 	modified := reCap.ReplaceAllStringFunc(str, capitalize)
 
 	reUp := regexp.MustCompile(`([^\s]+)\s+\(up\)\s*`) //
@@ -32,8 +32,11 @@ func main() {
 	fmt.Println(indx)
 	modified = reHex.ReplaceAllStringFunc(modified, hex_to_dec)
 
-	/*reQaws := regexp.MustCompile(`\s*\((\w+),\s*(\d+)\)`) // spcae (word, number)
-	modified = reQaws.ReplaceAllStringFunc(modified, qawsHandler)*/
+	reQaws := regexp.MustCompile(`\s*\((\w+),\s*(\d+)\)`) // spcae (word, number)
+	modified = reQaws.ReplaceAllStringFunc(modified, qawsHandler)
+
+	rePunct := regexp.MustCompile(`\s+,\s+`) // handle the spaces before and after the punctuation
+	modified = rePunct.ReplaceAllStringFunc(modified, Re_Punct)
 	fmt.Println(modified)
 }
 
@@ -64,6 +67,10 @@ func hex_to_dec(match string) string {
 }
 
 func qawsHandler(match string) string {
-	fmt.Println(match[0:len(match)])
-	return "QAWS"
+	//fmt.Println(match[0:len(match)])
+	return ""
+}
+
+func Re_Punct(match string) string {
+	return ", "
 }
