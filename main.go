@@ -28,6 +28,8 @@ func main() {
 	modified = reBin.ReplaceAllStringFunc(modified, bin_to_dec)
 
 	reHex := regexp.MustCompile(`([^\s]+)\s+\(hex\)`) //
+	indx := reHex.FindStringIndex(modified)
+	fmt.Println(indx)
 	modified = reHex.ReplaceAllStringFunc(modified, hex_to_dec)
 
 	/*reQaws := regexp.MustCompile(`\s*\((\w+),\s*(\d+)\)`) // spcae (word, number)
