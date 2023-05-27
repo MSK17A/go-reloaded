@@ -55,7 +55,7 @@ func main() {
 		}
 	}
 
-	rePunct := regexp.MustCompile(`\s+([[:punct:]]{1,})\s*`) // handle the spaces before and after the punctuation
+	rePunct := regexp.MustCompile(`\s+([[:punct:]]{1,})\s*`) // handle the spaces before and after the punctuation, also works for group of puncts.
 	str_out = rePunct.ReplaceAllStringFunc(str_out, Re_Punct)
 	fmt.Println(str_out)
 }
@@ -92,13 +92,13 @@ func hex_to_dec(match string) string {
 }*/
 
 func Re_Punct(match string) string {
-	the_isolated_punct := ""
+	the_isolated_punct := ""	// A placeholder to isolate the actual punctuation from the spaces
 	for _, char := range match {
-		if char != ' '{
+		if char != ' '{			// Do not add the spaces
 			the_isolated_punct += string(char)
 		}
 	}
 	//fmt.Println(the_isolated_punct)
 	
-	return the_isolated_punct + " "
+	return the_isolated_punct + " " // add one space after the punctuation
 }
