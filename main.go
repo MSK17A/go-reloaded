@@ -92,13 +92,16 @@ func hex_to_dec(match string) string {
 }*/
 
 func Re_Punct(match string) string {
-	the_isolated_punct := ""	// A placeholder to isolate the actual punctuation from the spaces
+	if strings.ContainsAny(match, "(){}&^") { // If it is not like these punctionans ?!,... just return them and skip
+		return match
+	}
+	the_isolated_punct := "" // A placeholder to isolate the actual punctuation from the spaces
 	for _, char := range match {
-		if char != ' '{			// Do not add the spaces
+		if char != ' ' { // Do not add the spaces
 			the_isolated_punct += string(char)
 		}
 	}
 	//fmt.Println(the_isolated_punct)
-	
+
 	return the_isolated_punct + " " // add one space after the punctuation
 }
