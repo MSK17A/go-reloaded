@@ -28,16 +28,36 @@ func main() {
 	modified = reBin.ReplaceAllStringFunc(modified, bin_to_dec)
 
 	reHex := regexp.MustCompile(`([^\s]+)\s+\(hex\)`) //
-	indx := reHex.FindStringIndex(modified)
-	fmt.Println(indx)
+	/*indx := reHex.FindStringIndex(modified)
+	fmt.Println(indx)*/
 	modified = reHex.ReplaceAllStringFunc(modified, hex_to_dec)
 
-	reQaws := regexp.MustCompile(`\s*\((\w+),\s*(\d+)\)`) // spcae (word, number)
-	modified = reQaws.ReplaceAllStringFunc(modified, qawsHandler)
+	/*reQaws := regexp.MustCompile(`\s*\((\w+),\s*(\d+)\)`) // spcae (word, number)
+	modified = reQaws.ReplaceAllStringFunc(modified, qawsHandler)*/
+
+	string_list := strings.Split(string(modified), " ") // Conv string to a List of strings
+	for idx, word := range string_list {
+		if word == "(low," {
+			nLow(string_list, idx)
+		} else if word == "(up," {
+			nUp(string_list, idx)
+		} else if word == "(cap," {
+			nCapitalize(string_list, idx)
+		}
+	}
+	/*reQaws := regexp.MustCompile(`\s*\((\w+),\s*(\d+)\)`) // spcae (word, number)
+	modified = reQaws.ReplaceAllStringFunc(modified, qawsHandler)*/
+	str_out := ""
+	for _, word := range string_list {
+		if word != "" {
+			str_out += word
+			str_out += " "
+		}
+	}
 
 	rePunct := regexp.MustCompile(`\s+,\s+`) // handle the spaces before and after the punctuation
-	modified = rePunct.ReplaceAllStringFunc(modified, Re_Punct)
-	fmt.Println(modified)
+	str_out = rePunct.ReplaceAllStringFunc(str_out, Re_Punct)
+	fmt.Println(str_out)
 }
 
 func capitalize(match string) string {
@@ -66,10 +86,10 @@ func hex_to_dec(match string) string {
 	return strconv.Itoa(int(num))
 }
 
-func qawsHandler(match string) string {
+/*func qawsHandler(match string) string {
 	//fmt.Println(match[0:len(match)])
 	return ""
-}
+}*/
 
 func Re_Punct(match string) string {
 	return ", "

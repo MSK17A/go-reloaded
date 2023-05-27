@@ -10,7 +10,7 @@ func nUp(string_list []string, idx int) {
 	num, _ := strconv.Atoi(num_str[0])                // Convert the number to integer, so we can use it to lowerCase number of strings behind
 
 	for i := idx; i > idx-num; i-- {
-		string_list[i-1] = strings.ToLower(string_list[i-1])
+		string_list[i-1] = strings.ToUpper(string_list[i-1])
 	}
 
 	string_list[idx] = ""
