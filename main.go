@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -36,22 +37,17 @@ func main() {
 	reCap := regexp.MustCompile(`([^\s]+)\s+\(cap\)\s*`) // Selects this expression " (cap) "
 	modified := reCap.ReplaceAllStringFunc(str, capitalize)
 
-	reUp := regexp.MustCompile(`([^\s]+)\s+\(up\)\s*`) //
+	reUp := regexp.MustCompile(`([^\s]+)\s+\(up\)\s*`) // Selects this expression " (up) "
 	modified = reUp.ReplaceAllStringFunc(modified, ToUp)
 
-	reLow := regexp.MustCompile(`([^\s]+)\s+\(low\)\s*`) //
+	reLow := regexp.MustCompile(`([^\s]+)\s+\(low\)\s*`) // Selects this expression " (low) "
 	modified = reLow.ReplaceAllStringFunc(modified, ToLow)
 
-	reBin := regexp.MustCompile(`([^\s]+)\s+\(bin\)`) //
+	reBin := regexp.MustCompile(`([^\s]+)\s+\(bin\)`) // Selects this expression " (bin) "
 	modified = reBin.ReplaceAllStringFunc(modified, bin_to_dec)
 
-	reHex := regexp.MustCompile(`([^\s]+)\s+\(hex\)`) //
-	/*indx := reHex.FindStringIndex(modified)
-	fmt.Println(indx)*/
+	reHex := regexp.MustCompile(`([^\s]+)\s+\(hex\)`) // Selects this expression " (hex) "
 	modified = reHex.ReplaceAllStringFunc(modified, hex_to_dec)
-
-	/*reQaws := regexp.MustCompile(`\s*\((\w+),\s*(\d+)\)`) // spcae (word, number)
-	modified = reQaws.ReplaceAllStringFunc(modified, qawsHandler)*/
 
 	string_list := strings.Split(string(modified), " ") // Conv string to a List of strings
 	for idx, word := range string_list {
@@ -80,12 +76,31 @@ func main() {
 	str_out = reQuote.ReplaceAllStringFunc(str_out, Re_Quote)
 
 	vowels := "aAeEiIoOuUhH"
+	// Loop through all vowels
 	for _, vowel := range vowels {
 		reVowls := regexp.MustCompile(`\sa\s` + string(vowel)) // handle the vowels
 		str_out = reVowls.ReplaceAllStringFunc(str_out, Re_Vowls)
 	}
 
-	fmt.Println(str_out)
+	// Remove last space
+	if str_out[len(str_out)-1] == ' ' {
+		str_out = str_out[0 : len(str_out)-1]
+	}
+	// fmt.Println(str_out)
+
+	f_output, err := os.Create("result.txt")
+	if err != nil {
+		fmt.Println("Error creating file!")
+		return
+	}
+	w := bufio.NewWriter(f_output)
+	_, err = w.WriteString(str_out)
+	if err != nil {
+		fmt.Println("Error writing file!")
+		return
+	}
+
+	w.Flush()
 }
 
 func capitalize(match string) string {
@@ -123,12 +138,12 @@ func Re_Punct(match string) string {
 	if strings.ContainsAny(match, "(){}&^'") { // If it is not like these punctionans ?!,... just return them and skip
 		return match
 	}
-	the_isolated_punct := "" // A placeholder to isolate the actual punctuation from the spaces
-	for _, char := range match {
+	the_isolated_punct := strings.Trim(match, " ") // A placeholder to isolate the actual punctuation from the spaces
+	/*for _, char := range match {
 		if char != ' ' { // Do not add the spaces
 			the_isolated_punct += string(char)
 		}
-	}
+	}*/
 	//fmt.Println(the_isolated_punct)
 
 	return the_isolated_punct + " " // add one space after the punctuation
