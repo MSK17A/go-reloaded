@@ -17,12 +17,18 @@ func main() {
 		return
 	}
 
-	if len(os.Args) > 2 {
-		fmt.Println("Error: Add only one file as an argument")
+	if len(os.Args) == 2 {
+		fmt.Println("Error: Put a name for the output file in the second argument!")
 		return
 	}
 
-	file_name := os.Args[1]            // Reading the first argument after program name
+	if len(os.Args) > 3 {
+		fmt.Println("Error: Add only one input file and one output name.")
+		return
+	}
+
+	file_name := os.Args[1] // Reading the first argument after program name
+	output_name := os.Args[2]
 	dat, err := os.ReadFile(file_name) // Read the file and get the data as byte[]
 	if err != nil {
 		fmt.Println("Error in reading the file!")
@@ -88,7 +94,7 @@ func main() {
 	}
 	// fmt.Println(str_out)
 
-	f_output, err := os.Create("result.txt")
+	f_output, err := os.Create(output_name)
 	if err != nil {
 		fmt.Println("Error creating file!")
 		return
