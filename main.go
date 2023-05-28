@@ -57,6 +57,16 @@ func main() {
 
 	rePunct := regexp.MustCompile(`\s+([[:punct:]]{1,})\s*`) // handle the spaces before and after the punctuation, also works for group of puncts.
 	str_out = rePunct.ReplaceAllStringFunc(str_out, Re_Punct)
+
+	reQuote := regexp.MustCompile(`\'[^']+\'`) // handle the quotation marks ''
+	str_out = reQuote.ReplaceAllStringFunc(str_out, Re_Quote)
+
+	vowels := "aAeEiIoOuUhH"
+	for _, vowel := range(vowels) {
+		reVowls := regexp.MustCompile(`\sa\s` + string(vowel)) // handle the vowels
+		str_out = reVowls.ReplaceAllStringFunc(str_out, Re_Vowls)
+	}
+
 	fmt.Println(str_out)
 }
 
@@ -92,7 +102,7 @@ func hex_to_dec(match string) string {
 }*/
 
 func Re_Punct(match string) string {
-	if strings.ContainsAny(match, "(){}&^") { // If it is not like these punctionans ?!,... just return them and skip
+	if strings.ContainsAny(match, "(){}&^'") { // If it is not like these punctionans ?!,... just return them and skip
 		return match
 	}
 	the_isolated_punct := "" // A placeholder to isolate the actual punctuation from the spaces
@@ -104,4 +114,15 @@ func Re_Punct(match string) string {
 	//fmt.Println(the_isolated_punct)
 
 	return the_isolated_punct + " " // add one space after the punctuation
+}
+
+func Re_Quote (match string) string {
+	inside_quote := match[1: len(match)-1]
+	inside_quote = strings.Trim(inside_quote, " ")
+	//fmt.Println(inside_quote)
+	return "'"+inside_quote+"'"
+}
+
+func Re_Vowls (match string) string {
+	return match[0:1] + "an" + match[2:]
 }
