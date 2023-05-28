@@ -21,8 +21,12 @@ func main() {
 		return
 	}
 
-	file_name := os.Args[1]          // Reading the first argument after program name
-	dat, _ := os.ReadFile(file_name) // Read the file and get the data as byte[]
+	file_name := os.Args[1]            // Reading the first argument after program name
+	dat, err := os.ReadFile(file_name) // Read the file and get the data as byte[]
+	if err != nil {
+		fmt.Println("Error in reading the file!")
+		return
+	}
 	if len(dat) < 1 {
 		fmt.Println("Empty file!")
 		return
