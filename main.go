@@ -11,8 +11,22 @@ import (
 )
 
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("Error: Add a file as argument")
+		return
+	}
+
+	if len(os.Args) > 2 {
+		fmt.Println("Error: Add only one file as an argument")
+		return
+	}
+
 	file_name := os.Args[1]          // Reading the first argument after program name
 	dat, _ := os.ReadFile(file_name) // Read the file and get the data as byte[]
+	if len(dat) < 1 {
+		fmt.Println("Empty file!")
+		return
+	}
 	str := string(dat)
 
 	reCap := regexp.MustCompile(`([^\s]+)\s+\(cap\)\s*`) // Selects this expression " (cap) "
@@ -62,7 +76,7 @@ func main() {
 	str_out = reQuote.ReplaceAllStringFunc(str_out, Re_Quote)
 
 	vowels := "aAeEiIoOuUhH"
-	for _, vowel := range(vowels) {
+	for _, vowel := range vowels {
 		reVowls := regexp.MustCompile(`\sa\s` + string(vowel)) // handle the vowels
 		str_out = reVowls.ReplaceAllStringFunc(str_out, Re_Vowls)
 	}
@@ -116,13 +130,13 @@ func Re_Punct(match string) string {
 	return the_isolated_punct + " " // add one space after the punctuation
 }
 
-func Re_Quote (match string) string {
-	inside_quote := match[1: len(match)-1]
+func Re_Quote(match string) string {
+	inside_quote := match[1 : len(match)-1]
 	inside_quote = strings.Trim(inside_quote, " ")
 	//fmt.Println(inside_quote)
-	return "'"+inside_quote+"'"
+	return "'" + inside_quote + "'"
 }
 
-func Re_Vowls (match string) string {
+func Re_Vowls(match string) string {
 	return match[0:1] + "an" + match[2:]
 }
