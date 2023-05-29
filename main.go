@@ -39,19 +39,19 @@ func main() {
 	}
 	str := string(dat)
 
-	reCap := regexp.MustCompile(`([^\s]+)\s+\(cap\)\s*`) // Selects this expression " (cap) "
+	reCap := regexp.MustCompile(`([^\s]+)\s+\(cap\)\s+`) // Selects this expression " (cap) "
 	modified := reCap.ReplaceAllStringFunc(str, Capitalize)
 
-	reUp := regexp.MustCompile(`([^\s]+)\s+\(up\)\s*`) // Selects this expression " (up) "
+	reUp := regexp.MustCompile(`([^\s]+)\s+\(up\)\s+`) // Selects this expression " (up) "
 	modified = reUp.ReplaceAllStringFunc(modified, ToUp)
 
-	reLow := regexp.MustCompile(`([^\s]+)\s+\(low\)\s*`) // Selects this expression " (low) "
+	reLow := regexp.MustCompile(`([^\s]+)\s+\(low\)\s+`) // Selects this expression " (low) "
 	modified = reLow.ReplaceAllStringFunc(modified, ToLow)
 
-	reBin := regexp.MustCompile(`([^\s]+)\s+\(bin\)`) // Selects this expression " (bin) "
+	reBin := regexp.MustCompile(`([^\s]+)\s+\(bin\)\s+`) // Selects this expression " (bin) "
 	modified = reBin.ReplaceAllStringFunc(modified, BinToDec)
 
-	reHex := regexp.MustCompile(`([^\s]+)\s+\(hex\)`) // Selects this expression " (hex) "
+	reHex := regexp.MustCompile(`([^\s]+)\s+\(hex\)\s+`) // Selects this expression " (hex) "
 	modified = reHex.ReplaceAllStringFunc(modified, HexToDec)
 
 	string_list := strings.Split(string(modified), " ") // Conv string to a List of strings
