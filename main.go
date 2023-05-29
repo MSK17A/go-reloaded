@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"regexp"
-	"strconv"
 
 	//"strconv"
 	"os"
@@ -41,7 +40,7 @@ func main() {
 	str := string(dat)
 
 	reCap := regexp.MustCompile(`([^\s]+)\s+\(cap\)\s*`) // Selects this expression " (cap) "
-	modified := reCap.ReplaceAllStringFunc(str, capitalize)
+	modified := reCap.ReplaceAllStringFunc(str, Capitalize)
 
 	reUp := regexp.MustCompile(`([^\s]+)\s+\(up\)\s*`) // Selects this expression " (up) "
 	modified = reUp.ReplaceAllStringFunc(modified, ToUp)
@@ -50,10 +49,10 @@ func main() {
 	modified = reLow.ReplaceAllStringFunc(modified, ToLow)
 
 	reBin := regexp.MustCompile(`([^\s]+)\s+\(bin\)`) // Selects this expression " (bin) "
-	modified = reBin.ReplaceAllStringFunc(modified, bin_to_dec)
+	modified = reBin.ReplaceAllStringFunc(modified, BinToDec)
 
 	reHex := regexp.MustCompile(`([^\s]+)\s+\(hex\)`) // Selects this expression " (hex) "
-	modified = reHex.ReplaceAllStringFunc(modified, hex_to_dec)
+	modified = reHex.ReplaceAllStringFunc(modified, HexToDec)
 
 	string_list := strings.Split(string(modified), " ") // Conv string to a List of strings
 	for idx, word := range string_list {
@@ -67,6 +66,8 @@ func main() {
 	}
 	/*reQaws := regexp.MustCompile(`\s*\((\w+),\s*(\d+)\)`) // spcae (word, number)
 	modified = reQaws.ReplaceAllStringFunc(modified, qawsHandler)*/
+
+	// Re-construct the string from array
 	str_out := ""
 	for _, word := range string_list {
 		if word != "" {
@@ -109,59 +110,7 @@ func main() {
 	w.Flush()
 }
 
-func capitalize(match string) string {
-	str := match[0 : len(match)-6]                  // Trims "(cap) "
-	str = strings.ToUpper(string(str[0])) + str[1:] // Select the first letter and upper case it then add it to the string
-	return str
-}
-
-func ToUp(match string) string {
-	return strings.ToUpper(match[0 : len(match)-6]) // Trims "(up) "
-}
-
-func ToLow(match string) string {
-	return strings.ToLower(match[0 : len(match)-6]) // Trims "(low) "
-}
-
-func bin_to_dec(match string) string {
-	str := match[0 : len(match)-6]
-	num, _ := strconv.ParseInt(str, 2, 64)
-	return strconv.Itoa(int(num))
-}
-
-func hex_to_dec(match string) string {
-	str := match[0 : len(match)-6]
-	num, _ := strconv.ParseInt(str, 16, 64)
-	return strconv.Itoa(int(num))
-}
-
 /*func qawsHandler(match string) string {
 	//fmt.Println(match[0:len(match)])
 	return ""
 }*/
-
-func Re_Punct(match string) string {
-	if strings.ContainsAny(match, "(){}&^'") { // If it is not like these punctionans ?!,... just return them and skip
-		return match
-	}
-	the_isolated_punct := strings.Trim(match, " ") // A placeholder to isolate the actual punctuation from the spaces
-	/*for _, char := range match {
-		if char != ' ' { // Do not add the spaces
-			the_isolated_punct += string(char)
-		}
-	}*/
-	//fmt.Println(the_isolated_punct)
-
-	return the_isolated_punct + " " // add one space after the punctuation
-}
-
-func Re_Quote(match string) string {
-	inside_quote := match[1 : len(match)-1]
-	inside_quote = strings.Trim(inside_quote, " ")
-	//fmt.Println(inside_quote)
-	return "'" + inside_quote + "'"
-}
-
-func Re_Vowls(match string) string {
-	return match[0:1] + "an" + match[2:]
-}
