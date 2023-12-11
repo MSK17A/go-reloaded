@@ -1,11 +1,11 @@
-package main
+package pkgs
 
 import (
 	"strconv"
 	"strings"
 )
 
-func nUp(string_list []string, idx int) {
+func NUp(string_list []string, idx int) {
 	num_str := strings.Split(string_list[idx+1], ")") // Seperate the number from the bracket ')'. (low, <number>)
 	num, _ := strconv.Atoi(num_str[0])                // Convert the number to integer, so we can use it to lowerCase number of strings behind
 

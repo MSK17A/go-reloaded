@@ -1,0 +1,1 @@
+Arold Wilson: 'I am an optimist, but an optimist who carries a raincoat.'

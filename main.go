@@ -3,11 +3,12 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"goReloaded/pkgs"
 	"regexp"
+	"strings"
 
 	//"strconv"
 	"os"
-	"strings"
 )
 
 func main() {
@@ -40,59 +41,42 @@ func main() {
 	str := string(dat)
 
 	reCap := regexp.MustCompile(`([^\s]+)\s+\(cap\)\s+`) // Selects this expression " (cap) "
-	modified := reCap.ReplaceAllStringFunc(str, Capitalize)
+	modified := reCap.ReplaceAllStringFunc(str, pkgs.Capitalize)
 
 	reUp := regexp.MustCompile(`([^\s]+)\s+\(up\)\s+`) // Selects this expression " (up) "
-	modified = reUp.ReplaceAllStringFunc(modified, ToUp)
+	modified = reUp.ReplaceAllStringFunc(modified, pkgs.ToUp)
 
 	reLow := regexp.MustCompile(`([^\s]+)\s+\(low\)\s+`) // Selects this expression " (low) "
-	modified = reLow.ReplaceAllStringFunc(modified, ToLow)
+	modified = reLow.ReplaceAllStringFunc(modified, pkgs.ToLow)
 
 	reBin := regexp.MustCompile(`([^\s]+)\s+\(bin\)\s+`) // Selects this expression " (bin) "
-	modified = reBin.ReplaceAllStringFunc(modified, BinToDec)
+	modified = reBin.ReplaceAllStringFunc(modified, pkgs.BinToDec)
 
 	reHex := regexp.MustCompile(`([^\s]+)\s+\(hex\)\s+`) // Selects this expression " (hex) "
-	modified = reHex.ReplaceAllStringFunc(modified, HexToDec)
+	modified = reHex.ReplaceAllStringFunc(modified, pkgs.HexToDec)
 
-	string_list := strings.Split(string(modified), " ") // Conv string to a List of strings
-	for idx, word := range string_list {
-		if word == "(low," {
-			nLow(string_list, idx)
-		} else if word == "(up," {
-			nUp(string_list, idx)
-		} else if word == "(cap," {
-			nCapitalize(string_list, idx)
-		}
-	}
-	/*reQaws := regexp.MustCompile(`\s*\((\w+),\s*(\d+)\)`) // spcae (word, number)
-	modified = reQaws.ReplaceAllStringFunc(modified, qawsHandler)*/
-
-	// Re-construct the string from array
-	str_out := ""
-	for _, word := range string_list {
-		if word != "" {
-			str_out += word
-			str_out += " "
-		}
-	}
+	str_out := pkgs.Cap_qaws_with_number(modified)
+	str_out = pkgs.Low_qaws_with_number(str_out)
 
 	rePunct := regexp.MustCompile(`\s+([[:punct:]]{1,})\s*`) // handle the spaces before and after the punctuation, also works for group of puncts.
-	str_out = rePunct.ReplaceAllStringFunc(str_out, Re_Punct)
+	str_out = rePunct.ReplaceAllStringFunc(str_out, pkgs.Re_Punct)
 
 	reQuote := regexp.MustCompile(`\'[^']+\'`) // handle the quotation marks ''
-	str_out = reQuote.ReplaceAllStringFunc(str_out, Re_Quote)
+	str_out = reQuote.ReplaceAllStringFunc(str_out, pkgs.Re_Quote)
 
 	vowels := "aAeEiIoOuUhH"
 	// Loop through all vowels
 	for _, vowel := range vowels {
 		reVowls := regexp.MustCompile(`\sa\s` + string(vowel)) // handle the vowels
-		str_out = reVowls.ReplaceAllStringFunc(str_out, Re_Vowls)
+		str_out = reVowls.ReplaceAllStringFunc(str_out, pkgs.Re_Vowls)
 	}
 
 	// Remove last space
 	if str_out[len(str_out)-1] == ' ' {
 		str_out = str_out[0 : len(str_out)-1]
 	}
+
+	str_out = strings.TrimSpace(str_out)
 	// fmt.Println(str_out)
 
 	f_output, err := os.Create(output_name)
