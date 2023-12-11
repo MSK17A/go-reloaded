@@ -55,8 +55,9 @@ func main() {
 	reHex := regexp.MustCompile(`([^\s]+)\s+\(hex\)\s+`) // Selects this expression " (hex) "
 	modified = reHex.ReplaceAllStringFunc(modified, pkgs.HexToDec)
 
-	str_out := pkgs.Cap_qaws_with_number(modified)
-	str_out = pkgs.Low_qaws_with_number(str_out)
+	str_out := pkgs.Cap_qaws_with_number(modified) // Numberd brackets CAP
+	str_out = pkgs.Low_qaws_with_number(str_out)   // Numberd brackets LOW
+	str_out = pkgs.Up_qaws_with_number(str_out)    // Numberd brackets UP
 
 	rePunct := regexp.MustCompile(`\s+([[:punct:]]{1,})\s*`) // handle the spaces before and after the punctuation, also works for group of puncts.
 	str_out = rePunct.ReplaceAllStringFunc(str_out, pkgs.Re_Punct)
