@@ -71,11 +71,6 @@ func main() {
 		str_out = reVowls.ReplaceAllStringFunc(str_out, pkgs.Re_Vowls)
 	}
 
-	// Remove last space
-	if str_out[len(str_out)-1] == ' ' {
-		str_out = str_out[0 : len(str_out)-1]
-	}
-
 	str_out = strings.TrimSpace(str_out)
 	// fmt.Println(str_out)
 
