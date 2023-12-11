@@ -55,24 +55,24 @@ func main() {
 	reHex := regexp.MustCompile(`([^\s]+)\s+\(hex\)\s+`) // Selects this expression " (hex) "
 	modified = reHex.ReplaceAllStringFunc(modified, pkgs.HexToDec)
 
-	str_out := pkgs.Cap_qaws_with_number(modified) // Numberd brackets CAP
-	str_out = pkgs.Low_qaws_with_number(str_out)   // Numberd brackets LOW
-	str_out = pkgs.Up_qaws_with_number(str_out)    // Numberd brackets UP
+	modified = pkgs.Cap_qaws_with_number(modified) // Numberd brackets CAP
+	modified = pkgs.Low_qaws_with_number(modified) // Numberd brackets LOW
+	modified = pkgs.Up_qaws_with_number(modified)  // Numberd brackets UP
 
 	rePunct := regexp.MustCompile(`\s+([[:punct:]]{1,})\s*`) // handle the spaces before and after the punctuation, also works for group of puncts.
-	str_out = rePunct.ReplaceAllStringFunc(str_out, pkgs.Re_Punct)
+	modified = rePunct.ReplaceAllStringFunc(modified, pkgs.Re_Punct)
 
 	reQuote := regexp.MustCompile(`\'[^']+\'`) // handle the quotation marks ''
-	str_out = reQuote.ReplaceAllStringFunc(str_out, pkgs.Re_Quote)
+	modified = reQuote.ReplaceAllStringFunc(modified, pkgs.Re_Quote)
 
 	vowels := "aAeEiIoOuUhH"
 	// Loop through all vowels
 	for _, vowel := range vowels {
 		reVowls := regexp.MustCompile(`\sa\s` + string(vowel)) // handle the vowels
-		str_out = reVowls.ReplaceAllStringFunc(str_out, pkgs.Re_Vowls)
+		modified = reVowls.ReplaceAllStringFunc(modified, pkgs.Re_Vowls)
 	}
 
-	str_out = strings.TrimSpace(str_out)
+	modified = strings.TrimSpace(modified)
 	// fmt.Println(str_out)
 
 	f_output, err := os.Create(output_name)
@@ -81,7 +81,7 @@ func main() {
 		return
 	}
 	w := bufio.NewWriter(f_output)
-	_, err = w.WriteString(str_out)
+	_, err = w.WriteString(modified)
 	if err != nil {
 		fmt.Println("Error writing file!")
 		return
